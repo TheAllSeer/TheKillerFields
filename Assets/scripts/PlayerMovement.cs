@@ -13,8 +13,13 @@ public class PlayerMovement : MonoBehaviour
     bool isFacingRight = true;
     float horizontalMovement;
     float verticalMovement;
+    bool isMoving;
     [SerializeField] private Animator animator;
 
+
+    [Header("Attacks")]
+    public InputAction playerAttack;
+    bool isAttacking1;
     void Start()
     {
 
@@ -22,10 +27,16 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, verticalMovement * moveSpeed);
+        if (!isAttacking1)
+        {
+            rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, verticalMovement * moveSpeed);
+        }
+        else
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
         Flip();
-        // rb.linearVelocity = new Vector2(verticalMovement * moveSpeed, rb.linearVelocityY);
-        bool isMoving = horizontalMovement != 0 || verticalMovement != 0;
+        isMoving = (horizontalMovement != 0 || verticalMovement != 0) && !isAttacking1;
         animator.SetBool("isRunning", isMoving);
     }
 
@@ -34,9 +45,21 @@ public class PlayerMovement : MonoBehaviour
         Vector2 moveInput = context.ReadValue<Vector2>();
         horizontalMovement = moveInput.x;
         verticalMovement = moveInput.y;
+        
     }
-
-
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            animator.SetTrigger("isAttacking1");
+            isAttacking1 = true;
+            isMoving = false;
+        }
+    }
+    public void Attack1Finished()
+    {
+        isAttacking1 = false;
+    }
     private void Flip()
     {
         if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0){
