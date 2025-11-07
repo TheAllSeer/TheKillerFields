@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("Attacks")]
     public InputAction playerAttack;
     bool isAttacking1;
+    [Header("Combo Attack")]
+    private bool isCombo = false;
+    private bool isGCD = false;
+
     void Start()
     {
 
@@ -38,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
         Flip();
         isMoving = (horizontalMovement != 0 || verticalMovement != 0) && !isAttacking1;
         animator.SetBool("isRunning", isMoving);
+        animator.SetBool("isCombo1", isCombo);
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -49,9 +54,16 @@ public class PlayerMovement : MonoBehaviour
     }
     public void OnFire(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && !isGCD)
         {
-            animator.SetTrigger("isAttacking1");
+            if (isCombo)
+            {
+                animator.SetTrigger("isAttacking2");
+            }
+            else
+            {
+                animator.SetTrigger("isAttacking1");
+            }
             isAttacking1 = true;
             isMoving = false;
         }
@@ -59,6 +71,25 @@ public class PlayerMovement : MonoBehaviour
     public void Attack1Finished()
     {
         isAttacking1 = false;
+    }
+
+    // combo!
+    public void Combo1WindowOpen()
+    {
+        isCombo = true;
+    }
+    public void Combo1WindowClosed()
+    {
+        isCombo = false;
+    }
+
+    public void StartGCD()
+    {
+        isGCD = true;
+    }
+    public void EndGCD()
+    {
+        isGCD = false;
     }
     private void Flip()
     {
