@@ -54,13 +54,13 @@ public class PlayerMovement : MonoBehaviour
     }
     public void OnFire(InputAction.CallbackContext context)
     {
-        if (context.started && !isGCD)
+        if (context.started)
         {
             if (isCombo)
             {
                 animator.SetTrigger("isAttacking2");
             }
-            else
+            else if (!isGCD)
             {
                 animator.SetTrigger("isAttacking1");
             }
