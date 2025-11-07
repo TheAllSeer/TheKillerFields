@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Attacks")]
     public InputAction playerAttack;
-    bool isAttacking1;
+    bool isAttacking;
     [Header("Combo Attack")]
     private bool isCombo = false;
     private bool isGCD = false;
@@ -31,16 +31,16 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!isAttacking1)
+        if (!isAttacking)
         {
             rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, verticalMovement * moveSpeed);
+            Flip();
         }
         else
         {
             rb.linearVelocity = Vector2.zero;
         }
-        Flip();
-        isMoving = (horizontalMovement != 0 || verticalMovement != 0) && !isAttacking1;
+        isMoving = (horizontalMovement != 0 || verticalMovement != 0) && !isAttacking;
         animator.SetBool("isRunning", isMoving);
         animator.SetBool("isCombo1", isCombo);
     }
@@ -64,13 +64,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 animator.SetTrigger("isAttacking1");
             }
-            isAttacking1 = true;
+            isAttacking = true;
             isMoving = false;
         }
     }
     public void Attack1Finished()
     {
-        isAttacking1 = false;
+        isAttacking = false;
     }
 
     // combo!
