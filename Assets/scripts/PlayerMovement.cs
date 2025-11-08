@@ -71,6 +71,8 @@ public class PlayerMovement : MonoBehaviour
     public void Attack1Finished()
     {
         isAttacking = false;
+        animator.ResetTrigger("isAttacking1");
+        animator.ResetTrigger("isAttacking2");
     }
 
     // combo!
@@ -90,6 +92,28 @@ public class PlayerMovement : MonoBehaviour
     public void EndGCD()
     {
         isGCD = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Check if hit by enemy attack
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy_hitbox"))
+        {
+            isAttacking = false;
+            isCombo = false;
+            isGCD = false;
+            animator.ResetTrigger("isAttacking1");
+            animator.ResetTrigger("isAttacking2");
+            animator.SetTrigger("isGettingHit");
+
+            // Take damage
+            // Trigger hit animation
+            // etc.
+        }
+    }
+    public void HitFinished()
+    {
+        isMoving = horizontalMovement != 0 || verticalMovement != 0;
+        animator.SetBool("isRunning", isMoving);
     }
     private void Flip()
     {

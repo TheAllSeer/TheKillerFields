@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Enemy_Skeleton
   layers:
   - Default
   - TransparentFX
@@ -12,10 +13,10 @@ TagManager:
   - Water
   - UI
   - Stairs
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Player_hitbox
+  - Enemy_hitbox
   - 
   - 
   - 
