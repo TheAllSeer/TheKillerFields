@@ -95,7 +95,6 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Check if hit by enemy attack
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy_hitbox"))
         {
             isAttacking = false;
@@ -104,10 +103,6 @@ public class PlayerMovement : MonoBehaviour
             animator.ResetTrigger("isAttacking1");
             animator.ResetTrigger("isAttacking2");
             animator.SetTrigger("isGettingHit");
-
-            // Take damage
-            // Trigger hit animation
-            // etc.
         }
     }
     public void HitFinished()

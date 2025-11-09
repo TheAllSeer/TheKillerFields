@@ -88,21 +88,16 @@ public class EnemyMovement : MonoBehaviour
         StopMoving();
         isAttacking = true;
         animator.SetTrigger("skeletonAttackStarted");
-        animator.SetBool("isSkeletonAttacking", true);
     }
     public void AttackFinished()
     {
         isAttacking = false;
-        animator.SetBool("isSkeletonAttacking", false);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Check if hit by player attack
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player_hitbox"))
         {
-            StopMoving();
             isAttacking = false;
-            animator.SetBool("isSkeletonAttacking", false);
             animator.ResetTrigger("skeletonAttackStarted");
             animator.SetTrigger("isGettingHit");
             // Take damage
