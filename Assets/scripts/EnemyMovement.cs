@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
@@ -24,6 +25,8 @@ public class EnemyMovement : MonoBehaviour
     [Header("Attacks")]
     bool isAttacking;
 
+    [Header("Hit")]
+    bool isGettingHitAnim = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,7 +39,8 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player == null) return;
+        if (isGettingHitAnim) StopMoving();
+        if (player == null || isGettingHitAnim) return;
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         if (distanceToPlayer <= detectionRange)
         {
@@ -57,7 +61,8 @@ public class EnemyMovement : MonoBehaviour
         {
             StopMoving();
         }
-        animator.SetBool("isSkeletonRunning", isMoving);
+        animator.SetBool("isSkeletonRunning", isMoving);            
+        
 
 
         if (!isAttacking)
@@ -68,6 +73,7 @@ public class EnemyMovement : MonoBehaviour
 
     void MoveTowardsPlayer()
     {
+        // if (isGettingHitAnim) return;
         Vector2 direction = (player.position - transform.position).normalized;
 
         horizontalMovement = direction.x;
@@ -85,6 +91,7 @@ public class EnemyMovement : MonoBehaviour
     }
     void Attack()
     {
+        // if (isGettingHitAnim) return;
         StopMoving();
         isAttacking = true;
         animator.SetTrigger("skeletonAttackStarted");
@@ -93,10 +100,17 @@ public class EnemyMovement : MonoBehaviour
     {
         isAttacking = false;
     }
+    public void HitAnimationFinished()
+    {
+        Debug.Log("isGettingHitAnim set to false from the funct!");
+        isGettingHitAnim = false;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player_hitbox"))
         {
+            isGettingHitAnim = true;
+            Debug.Log("isGettingHitAnim set to true!");
             isAttacking = false;
             animator.ResetTrigger("skeletonAttackStarted");
             animator.SetTrigger("isGettingHit");

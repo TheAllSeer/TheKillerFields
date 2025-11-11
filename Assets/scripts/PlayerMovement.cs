@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2 moveInput = context.ReadValue<Vector2>();
         horizontalMovement = moveInput.x;
         verticalMovement = moveInput.y;
-        
+
     }
     public void OnFire(InputAction.CallbackContext context)
     {
@@ -112,7 +112,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Flip()
     {
-        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0){
+        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        {
             isFacingRight = !isFacingRight;
             Vector3 ls = transform.localScale;
             ls.x *= -1f;
@@ -122,3 +123,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 }
+
+// things i think would be fun to add:
+// if his movement speed increased like lillia from league, the more attacks he hits the higher his attack speed
+// up to 4, stacks are lost when not attacking for a while
