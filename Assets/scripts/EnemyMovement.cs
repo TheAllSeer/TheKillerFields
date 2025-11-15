@@ -28,13 +28,22 @@ public class EnemyMovement : MonoBehaviour
     [Header("Hit")]
     bool isGettingHitAnim = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Health")]
+    public int maxHealth = 3;
+    int currentHealth;
+    bool isDead = false;
+
+
     void Start()
     {
+        currentHealth = maxHealth;
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
         }
     }
+    
+
 
     // Update is called once per frame
     void Update()
@@ -89,6 +98,16 @@ public class EnemyMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         isMoving = false;
     }
+    private void Flip()
+    {
+        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 ls = transform.localScale;
+            ls.x *= -1f;
+            transform.localScale = ls;
+        }
+    }
     void Attack()
     {
         // if (isGettingHitAnim) return;
@@ -102,34 +121,49 @@ public class EnemyMovement : MonoBehaviour
     }
     public void HitAnimationFinished()
     {
-        Debug.Log("isGettingHitAnim set to false from the funct!");
         isGettingHitAnim = false;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player_hitbox"))
         {
-            isGettingHitAnim = true;
-            Debug.Log("isGettingHitAnim set to true!");
-            isAttacking = false;
-            animator.ResetTrigger("skeletonAttackStarted");
-            animator.SetTrigger("isGettingHit");
+            TakeDamage(1);
             // Take damage
             // Trigger hit animation
             // etc.
         }
     }
 
-    private void Flip()
+    public void TakeDamage(int damage)
     {
-        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        if (isDead) return;
+        currentHealth -= damage;
+        if (currentHealth <= 0)
         {
-            isFacingRight = !isFacingRight;
-            Vector3 ls = transform.localScale;
-            ls.x *= -1f;
-            transform.localScale = ls;
+            Die();
+            return;
         }
+        isGettingHitAnim = true;
+        isAttacking = false;
+        animator.ResetTrigger("skeletonAttackStarted");
+        animator.SetTrigger("isGettingHit");
     }
+    private void Die()
+    {
+        isDead = true;
+        StopMoving();
+        animator.SetTrigger("isDead");
+        foreach (var collider in GetComponentsInChildren<Collider2D>())
+        {
+            collider.enabled = false;
+        }
+        this.enabled = false;
+    }
+    public void OnDeathAnimationComplete()
+    {
+        Destroy(gameObject, 1f);
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

@@ -24,9 +24,16 @@ public class PlayerMovement : MonoBehaviour
     private bool isCombo = false;
     private bool isGCD = false;
 
+    [Header("Health")]
+    public int maxHealth = 5;
+    int currentHealth;
+    bool isDead = false;
+
+
+
     void Start()
     {
-
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -51,6 +58,16 @@ public class PlayerMovement : MonoBehaviour
         horizontalMovement = moveInput.x;
         verticalMovement = moveInput.y;
 
+    }
+    private void Flip()
+    {
+        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 ls = transform.localScale;
+            ls.x *= -1f;
+            transform.localScale = ls;
+        }
     }
     public void OnFire(InputAction.CallbackContext context)
     {
@@ -97,12 +114,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy_hitbox"))
         {
-            isAttacking = false;
-            isCombo = false;
-            isGCD = false;
-            animator.ResetTrigger("isAttacking1");
-            animator.ResetTrigger("isAttacking2");
-            animator.SetTrigger("isGettingHit");
+            TakeDamage(1);
         }
     }
     public void HitFinished()
@@ -110,16 +122,39 @@ public class PlayerMovement : MonoBehaviour
         isMoving = horizontalMovement != 0 || verticalMovement != 0;
         animator.SetBool("isRunning", isMoving);
     }
-    private void Flip()
+
+    public void TakeDamage(int damage)
     {
-        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        if (isDead) return;
+        currentHealth -= damage;
+        if (currentHealth <= 0)
         {
-            isFacingRight = !isFacingRight;
-            Vector3 ls = transform.localScale;
-            ls.x *= -1f;
-            transform.localScale = ls;
+            Die();
+            return;
         }
+        isAttacking = false;
+        isCombo = false;
+        isGCD = false;
+        animator.ResetTrigger("isAttacking1");
+        animator.ResetTrigger("isAttacking2");
+        animator.SetTrigger("isGettingHit");
+
     }
+
+    private void Die()
+    {
+        isDead = true;
+        rb.linearVelocity = Vector2.zero;
+        animator.SetTrigger("isDead");
+        foreach (var collider in GetComponentsInChildren<Collider2D>())
+            collider.enabled = false;
+        this.enabled = false;
+    }
+    public void OnDeathAnimationComplete()
+    {
+        Destroy(gameObject, 1f);
+    }
+    
 
 
 }
