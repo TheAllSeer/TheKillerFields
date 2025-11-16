@@ -11,7 +11,7 @@ public class PlayerAttackHitbox : MonoBehaviour
         {
             if (collision.TryGetComponent(out EnemyHealth enemy))
             {
-                enemy.TakeDamage(damage)
+                enemy.TakeDamage(damage);
             }
         }
     }
