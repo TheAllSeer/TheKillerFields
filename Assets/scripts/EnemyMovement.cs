@@ -137,6 +137,12 @@ public class EnemyMovement : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+        Vector3 offset = new Vector3(
+            UnityEngine.Random.Range(-0.3f, 0.3f),
+            0.05f,
+            0
+        );
+        FloatingTextManager.Instance.ShowDamage(damage, transform.position + offset);
         currentHealth -= damage;
         if (currentHealth <= 0)
         {

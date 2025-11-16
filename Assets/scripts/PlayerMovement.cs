@@ -126,6 +126,12 @@ public class PlayerMovement : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+        Vector3 offset = new Vector3(
+            UnityEngine.Random.Range(-0.3f, 0.3f),
+            0.05f,
+            0
+        );
+        FloatingTextManager.Instance.ShowDamage(damage, transform.position + offset);
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
@@ -160,5 +166,10 @@ public class PlayerMovement : MonoBehaviour
 }
 
 // things i think would be fun to add:
-// if his movement speed increased like lillia from league, the more attacks he hits the higher his attack speed
-// up to 4, stacks are lost when not attacking for a while
+// * if his movement speed increased like lillia from league, the more attacks he hits the higher his attack speed
+//   up to 4, stacks are lost when not attacking for a while
+// * when getting upgrades, have some sort of a visual on the character. for example - 
+//   if my upgrade is adding red lightnings that follow the crows i shoot out, 
+//   have the character also have red lightnings around it, so that the player knows this power up is active.
+
+
