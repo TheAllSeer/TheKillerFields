@@ -6,35 +6,35 @@ public class EnemyHealth : MonoBehaviour
     private int currentHealth;
     public Animator animator;
 
+    private bool isDead = false;
+
     private void Awake()
     {
         currentHealth = maxHealth;
         if (animator == null)
-        {
-            animator.GetComponentInChildren<Animator>();
-        }
-
+            animator = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
         if (animator != null)
-        {
-            animator.SetTrigger("Hit");
-        }
+            animator.SetTrigger("Hit"); // new trigger
+
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     private void Die()
     {
+        isDead = true;
         if (animator != null)
-        {
-            animator.SetTrigger("Death");
-        }
-        Destroy(gameObject, 1f);
+            animator.SetTrigger("Death"); // new trigger
+        foreach (var col in GetComponentsInChildren<Collider2D>())
+            col.enabled = false;
+        this.enabled = false;
+        Destroy(gameObject, 1f); // destroy after animation plays
     }
 }
